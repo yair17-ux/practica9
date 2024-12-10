@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Deportes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+      width: 100%;
+    }
+    table, th, td {
+      border: 1px solid #333;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    button {
+      margin: 2px;
+      cursor: pointer;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestión de Deportes</h1>
+
+  <!-- Formulario para Agregar/Editar Deportes -->
+  <form id="deporte-form">
+    <label for="deporte">Deporte:</label>
+    <input type="text" id="deporte" required>
+    <input type="hidden" id="index-editar">
+    <button type="submit">Guardar</button>
+  </form>
+
+  <!-- Tabla para mostrar los deportes -->
+  <table>
+    <thead>
+      <tr>
+        <th>Deporte</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-deportes">
+      <!-- Las filas se agregarán dinámicamente aquí -->
+    </tbody>
+  </table>
+
+  <script>
+    let deportes = []; // Array para almacenar los deportes
+
+    // Función para actualizar la tabla
+    function actualizarTabla() {
+      const tabla = document.getElementById('tabla-deportes');
+      tabla.innerHTML = ''; // Limpiar la tabla
+
+      deportes.forEach((deporte, index) => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+          <td>${deporte}</td>
+          <td>
+            <button onclick="editarDeporte(${index})">Editar</button>
+            <button onclick="borrarDeporte(${index})">Borrar</button>
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    // Función para agregar o editar un deporte
+    function guardarDeporte() {
+      const inputDeporte = document.getElementById('deporte');
+      const indexEditar = document.getElementById('index-editar').value;
+
+      if (indexEditar) {
+        // Editar
+        deportes[indexEditar] = inputDeporte.value;
+        alert('Deporte editado');
+      } else {
+        // Agregar
+        deportes.push(inputDeporte.value);
+        alert('Deporte agregado');
+      }
+
+      // Limpiar el formulario
+      inputDeporte.value = '';
+      document.getElementById('index-editar').value = '';
+      actualizarTabla();
+    }
+
+    // Función para preparar el formulario para la edición
+    function editarDeporte(index) {
+      const inputDeporte = document.getElementById('deporte');
+      inputDeporte.value = deportes[index];
+      document.getElementById('index-editar').value = index;
+    }
+
+    // Función para borrar un deporte
+    function borrarDeporte(index) {
+      if (confirm('¿Estás seguro de que deseas borrar este deporte?')) {
+        deportes.splice(index, 1); // Eliminar el elemento del array
+        actualizarTabla();
+      }
+    }
+
+    // Configurar el formulario para guardar deportes
+    document.getElementById('deporte-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      guardarDeporte();
+    });
+
+    // Inicializar tabla
+    actualizarTabla();
+  </script>
+</body>
+</html>
